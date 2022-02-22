@@ -1,0 +1,78 @@
+class Solution
+{
+    public static void box(char mat[][],int a[][],int i,int j,boolean vis[][],int n,int m)
+    {
+        Queue<int[]> q=new LinkedList<>();
+        boolean vis1[][]=new boolean[n][m];
+        for (int p=0;p<n;p++)
+        {
+            for (int l=0;l<m;l++)
+            {
+                vis1[p][l]=vis[p][l];
+            }
+        }
+        int dirx[]={-1,1,0,0};
+        int diry[]={0,0,1,-1};
+        q.add(new int[]{i,j,1});
+        while(q.isEmpty()==false)
+        {
+            int t[]=q.poll();
+            for (int p=0;p<4;p++)
+            {
+                int x=t[0]+dirx[p];
+                int y=t[1]+diry[p];
+                if(x>=0 && y>=0 && x<n && y<m && mat[x][y]=='O' && vis1[x][y]==false)
+                {
+                    q.add(new int[]{x,y,t[2]+1});
+                    a[x][y]=(int)Math.min(a[x][y],t[2]);
+                    vis1[x][y]=true;
+                }
+            }
+        }
+    }
+    public static int[][] findDistance(char mat[][], int n,int m)
+    {
+        // Your code goes here
+        Queue<int[]> q=new LinkedList<>();
+        int a[][]=new int[n][m];
+        boolean vis[][]=new boolean[n][m];
+        for (int i=0;i<n;i++)
+        {
+            for (int j=0;j<m;j++)
+            {
+                if(mat[i][j]=='B')
+                {
+                    vis[i][j]=true;
+                    q.add(new int[]{i,j});
+                    a[i][j]=0;
+                }
+                else if(mat[i][j]=='W')
+                {
+                    vis[i][j]=true;
+                    a[i][j]=-1;
+                }
+                else
+                {
+                    vis[i][j]=false;
+                    a[i][j]=Integer.MAX_VALUE;
+                }
+            }
+        }
+        while(q.isEmpty()==false)
+        {
+            int t[]=q.poll();
+            box(mat,a,t[0],t[1],vis,n,m);
+        }
+        for (int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(a[i][j]==Integer.MAX_VALUE)
+                {
+                    a[i][j]=-1;
+                }
+            }
+        }
+        return a;
+    }
+}
